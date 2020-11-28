@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  php-httpd: 
+    build:
+      context: ./build
+      dockerfile: Dockerfile-PHP
+    container_name: apache
+    ports:
+      - 6666:80
+    networks: 
+      - front
+      - back
+    volumes:
+      - ./script:/var/www/html
+    restart: unless-stopped
+
+  db:
+    image: mysql:latest
+    container_name: mysql
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - back
+    environment: 
+      TZ: "Europe/Warsaw"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "rootpwd"
+      MYSQL_USER: "testuser"
+      MYSQL_PASSWORD: "testpassword"
+      MYSQL_DATABASE: "testdb"
+
+
+volumes:
+    mysql-volume:
+
+networks:
+  front:
+  back:
+
